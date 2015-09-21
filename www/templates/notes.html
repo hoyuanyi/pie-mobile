@@ -1,0 +1,86 @@
+<ion-view>
+  <ion-nav-title>Notes</ion-nav-title>
+  <ion-tabs class="tabs-icon-left">
+    <ion-tab title="Unread" icon-on="ion-ios-circle-filled" icon-off="ion-ios-circle-outline">
+      <ion-view>
+        <ion-header-bar class="bar-subheader item-input-inset" style="margin-top: 10px">
+          <label class="item-input-wrapper">
+            <i class="icon ion-ios7-search placeholder-icon"></i>
+            <input ng-model="filter.searchUnread" type="text" placeholder="Search" ng-change="onSearchChange('unread')">
+          </label>
+          <button class="button button-clear" ng-click="clearSearch('unread')">
+            Cancel
+          </button>
+        </ion-header-bar>
+        <ion-content>
+          <div class="card">
+            <div class="item item-divider">
+              I'm a Header in a Card!
+            </div>
+            <div class="item item-text-wrap">
+              This is a basic Card with some text.
+            </div>
+            <div class="item item-divider">
+              I'm a Footer in a Card!
+            </div>
+          </div>
+        </ion-content>
+      </ion-view>
+    </ion-tab>
+
+    <ion-tab title="All" icon-on="ion-ios-albums" icon-off="ion-ios-albums-outline">
+      <ion-view>
+        <ion-header-bar class="bar-subheader item-input-inset" style="margin-top: 10px">
+          <label class="item-input-wrapper">
+            <i class="icon ion-ios7-search placeholder-icon"></i>
+            <input type="search" placeholder="Search">
+          </label>
+          <button class="button button-clear">
+            Cancel
+          </button>
+        </ion-header-bar>
+        <ion-content>
+          <div class="card">
+            <div class="item item-divider">
+              I'm a Header in a Card!
+            </div>
+            <div class="item item-text-wrap">
+              This is a basic Card with some text.
+            </div>
+            <div class="item item-divider">
+              I'm a Footer in a Card!
+            </div>
+          </div>
+        </ion-content>
+      </ion-view>
+    </ion-tab>
+
+    <ion-tab title="Archived" icon-on="ion-ios-box" icon-off="ion-ios-box-outline">
+      <ion-view>
+        <ion-header-bar class="bar-subheader item-input-inset" style="margin-top: 10px">
+          <label class="item-input-wrapper">
+            <i class="icon ion-ios7-search placeholder-icon"></i>
+            <input type="search" placeholder="Search">
+          </label>
+          <button class="button button-clear">
+            Cancel
+          </button>
+        </ion-header-bar>
+        <ion-content>
+          <div class="card">
+            <div class="item item-divider">
+              I'm a Header in a Card!
+            </div>
+            <div class="item item-text-wrap">
+              This is a basic Card with some text.
+            </div>
+            <div class="item item-divider">
+              I'm a Footer in a Card!
+            </div>
+          </div>
+        </ion-content>
+      </ion-view>
+	  </ion-tab>
+	
+  </ion-tabs>
+</ion-view>

@@ -1,0 +1,84 @@
+<ion-side-menus enable-menu-with-back-views="false">
+
+  <ion-side-menu-content>
+
+    <ion-nav-bar class="bar-stable">
+
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+      <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+      <ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-ios7-arrow-back" menu-toggle="right" ng-if="displaySideMenu()">Filter Child</a>
+        <a class="button button-icon icon ion-ios7-arrow-back" ng-if="displayJoinGroup()">Join Group</a>
+      </ion-nav-buttons>
+    </ion-nav-bar>
+
+    <ion-nav-view name="navContent"></ion-nav-view>
+
+  </ion-side-menu-content>
+
+  <ion-side-menu side="left">
+
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">Navigation</h1>
+    </ion-header-bar>
+    <ion-content>
+      <ion-list>
+        <ion-item menu-close href="#/nav/dashboard" class="item-icon-left">
+          <i class="icon ion-grid"></i>Dashboard
+        </ion-item>
+        <ion-item menu-close href="#/nav/account" class="item-icon-left">
+          <i class="icon ion-person"></i>Account
+        </ion-item>
+        <ion-item menu-close href="#/nav/notes" ng-if="userrole != 'admin_role'" class="item-icon-left">
+          <i class="icon ion-ios-compose-outline"></i>Notes
+        </ion-item>
+        <ion-item menu-close href="#/nav/events" ng-if="userrole != 'admin_role'" class="item-icon-left">
+          <i class="icon ion-calendar"></i>Events
+        </ion-item>
+        <ion-item menu-close href="#/nav/homework" ng-if="userrole != 'admin_role'" class="item-icon-left">
+          <i class="icon ion-edit"></i>Homework
+        </ion-item>
+        <ion-item menu-close href="#/nav/groups" ng-if="['teacher_role', 'student_role'].indexOf(userrole) > -1" class="item-icon-left">
+          <i class="icon ion-android-contacts"></i>Groups
+        </ion-item>
+        <ion-item menu-close href="#/nav/schools" ng-if="userrole == 'admin_role'" class="item-icon-left">
+          <i class="icon ion-university"></i>Schools
+        </ion-item>
+        <ion-item menu-close href="#/nav/status" ng-if="userrole == 'admin_role'" class="item-icon-left">
+          <i class="icon ion-stats-bars"></i>Status
+        </ion-item>
+        <ion-item menu-close href="#/nav/children" ng-if="userrole == 'parent_role'" class="item-icon-left">
+          <i class="icon ion-android-contact"></i>Children
+        </ion-item>
+        <ion-item menu-close href="#/nav/settings" class="item-icon-left">
+          <i class="icon ion-ios-gear-outline"></i>Settings
+        </ion-item>
+        <ion-item menu-close ng-click="logout()" class="item-icon-left">
+          <i class="icon ion-log-out"></i>Logout
+        </ion-item>
+      </ion-list>
+    </ion-content>
+
+  </ion-side-menu>
+
+  <ion-side-menu side="right" is-enabled="displaySideMenu()">
+
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">Filter</h1>
+    </ion-header-bar>
+    <ion-content>
+      <ul class="list">
+          <li class="item item-checkbox">
+        <label class="checkbox">
+          <input type="checkbox">
+        </label> Flux Capacitor
+      </li>
+      </ul>
+    </ion-content>
+
+  </ion-side-menu>
+</ion-side-menus>
