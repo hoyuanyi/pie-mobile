@@ -32,22 +32,54 @@ angular.module('pie')
 })
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, $ionicModal) {
-  
-  $ionicModal.fromTemplateUrl('templates/register.html', {
+
+  $ionicModal.fromTemplateUrl('chooseType.html', {
+    id : '1',
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal = modal;
+    $scope.modal1 = modal;
   });
-  $scope.openRegisterModal = function() {
-    $scope.modal.show();
+
+  $ionicModal.fromTemplateUrl('parentRegister.html', {
+    id : '2',
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal2 = modal;
+  });
+
+  $ionicModal.fromTemplateUrl('childRegister.html', {
+    id : '3',
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal3 = modal;
+  });
+
+  $scope.openRegisterModal = function(index) {
+    if(index == 1) {
+      $scope.modal1.show();
+    } else if(index == 2) {
+      $scope.modal2.show();
+    } else {
+      $scope.modal3.show();
+    }
   };
-  $scope.closeRegisterModal = function() {
-    $scope.modal.hide();
+  $scope.closeRegisterModal = function(index) {
+    if(index == 1) {
+      $scope.modal1.hide();
+    } else if(index == 2) {
+      $scope.modal2.hide();
+    } else {
+      $scope.modal3.hide();
+    }
   };
   //Cleanup the modal when we're done with it!
   $scope.$on('$destroy', function() {
-    $scope.modal.remove();
+    $scope.modal1.remove();
+    $scope.modal2.remove();
+    $scope.modal3.remove();
   });
   // Execute action on hide modal
   $scope.$on('modal.hidden', function() {
