@@ -130,6 +130,19 @@ angular.module('pie', ['ionic', 'ngMockE2E'])
     }
   })
 
+  .state('nav.childrendetails', {
+    url: '/childrenDetails',
+    views: {
+      'navContent': {
+        templateUrl: 'templates/childrenDetails.html',
+        controller: 'ChildDetailsCtrl'
+      }
+    },
+    data: {
+      authorizedRoles: [USER_ROLES.parent]
+    }
+  })
+
   .state('nav.groups', {
     url: '/groups',
     views: {

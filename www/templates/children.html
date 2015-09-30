@@ -1,9 +1,15 @@
 <ion-view>
-  <ion-nav-title>Children</ion-nav-title>
-  <ion-nav-buttons side="right">
-    <a class="button button-icon icon ion-ios7-arrow-back" menu-toggle="right">Add Child</a>
-  </ion-nav-buttons>
-  <ion-content class="padding">
-      Children page.
-  </ion-content>
+	<ion-nav-title>Children</ion-nav-title>
+ 	<ion-nav-buttons side="right">
+    	<a class="button button-clear icon ion-android-person-add" menu-toggle="right" ng-click="showPopup()"></a>
+    </ion-nav-buttons>
+  	<ion-content>
+  		<div class="list">
+      	 	<a class="item item-icon-left item-icon-right" ng-click="getChildDetails()" ng-repeat="response in responses">
+    			<i class="icon ion-android-contact"></i>	
+    				{{response.username}}
+    			<i class="icon ion-ios-arrow-right"></i>
+  			</a>
+      	</div>
+  	</ion-content>
 </ion-view>
