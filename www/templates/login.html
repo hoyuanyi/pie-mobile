@@ -25,7 +25,7 @@
     <ion-content class="padding">
       <h3><center>Are you a</center></h3>     
       <button class="button button-block button-positive" ng-click="openRegisterModal(2)">Parent</button>
-      <button class="button button-block button-positive" ng-click="openRegisterModal(3)">Child</button>
+      <button class="button button-block button-positive" ng-click="openRegisterModal(3)">Student</button>
     </ion-content>
 </ion-modal-view>
 </script>
@@ -42,24 +42,24 @@
       <div class="row">
         <div class="col">
           <label class="item item-input">
-            <input type="text" placeholder="First Name" ng-model="data.firstname">
+            <input type="text" placeholder="First Name" ng-model="registerParentInfo.firstname">
           </label>
         </div>
         <div class="col">
           <label class="item item-input">
-            <input type="text" placeholder="Last Name" ng-model="data.lastname">
+            <input type="text" placeholder="Last Name" ng-model="registerParentInfo.lastname">
           </label>
         </div>
       </div>   
       <div class="padding">
       <label class="item item-input">
-        <input type="text" placeholder="Username" ng-model="data.username">
+        <input type="text" placeholder="Username" ng-model="registerParentInfo.username">
       </label>
       </div>
       <div class="row">
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="data.password">
+            <input type="password" placeholder="Password" ng-model="registerParentInfo.password">
         </label>
         </div>
         <div class="col">
@@ -70,12 +70,12 @@
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="email" placeholder="Email" ng-model="data.email">
+          <input type="email" placeholder="Email" ng-model="registerParentInfo.email">
         </label>
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="tel" placeholder="Mobile" ng-model="data.mobile">
+          <input type="tel" placeholder="Mobile" ng-model="registerParentInfo.mobile">
         </label>
       </div>
       <div class="padding">
@@ -96,13 +96,13 @@
     <ion-content>      
       <div class="padding">
       <label class="item item-input">
-        <input type="text" placeholder="Username" ng-model="data.username">
+        <input type="text" placeholder="Username" ng-model="registerStudentInfo.username">
       </label>
       </div>
       <div class="row">
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="data.password">
+            <input type="password" placeholder="Password" ng-model="registerStudentInfo.password">
         </label>
         </div>
         <div class="col">
@@ -113,17 +113,17 @@
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="email" placeholder="Email" ng-model="data.email">
+          <input type="email" placeholder="Email" ng-model="registerStudentInfo.email">
         </label>
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="tel" placeholder="Mobile" ng-model="data.mobile">
+          <input type="tel" placeholder="Mobile" ng-model="registerStudentInfo.mobile">
         </label>
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="text" placeholder="Student Code" ng-model="data.code">
+          <input type="text" placeholder="Student Code" ng-model="registerStudentInfo.studentcode">
         </label>
       </div>
       <div class="padding">

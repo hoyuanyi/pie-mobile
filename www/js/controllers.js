@@ -33,6 +33,9 @@ angular.module('pie')
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, $ionicModal) {
 
+  $scope.registerParentInfo = {};
+  $scope.registerStudentInfo = {};
+
   $ionicModal.fromTemplateUrl('chooseType.html', {
     id : '1',
     scope: $scope,
@@ -209,7 +212,81 @@ angular.module('pie')
 
 })
 
-.controller('ChildrenCtrl', function() {
+.controller('ChildrenCtrl', function($scope, $ionicPopup, $state) {
+
+  $scope.responses = [];
+
+  $scope.showPopup = function() {
+  $scope.data = {};
+
+  var myPopup = $ionicPopup.show({
+    template: '<input type="text" ng-model="data.studentcode" autofocus placeholder="Student code"></br>Relationship: <select ng-model="data.relationship"><option value="1">Parent</option><option value="2">Guardian</option></select>',
+    title: 'Add Child',
+    subTitle: 'Enter Student Code & Relationship',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+      {
+        text: '<b>Submit</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.data.studentcode || !$scope.data.relationship) {
+            //don't allow the user to close unless he enters studentcode and relationship
+            e.preventDefault();
+          } else {
+            $scope.data.username = "Ho Yuan Yi";
+            $scope.data.group = "2E4 2015";
+            $scope.responses.push($scope.data);
+            return $scope.data;
+          }
+        }
+      }
+    ]
+  });
+  myPopup.then(function(res) {
+    console.log('Tapped!', res);
+  });
+ };
+
+  $scope.getChildDetails = function() {
+    $state.go('nav.childrendetails');
+  }
+
+})
+
+.controller('ChildDetailsCtrl', function($scope, $ionicPopup) {
+
+  $scope.responses = [];
+
+  $scope.showAddGroupPopup = function() {
+  $scope.data = {};
+
+  var addGroupPopup = $ionicPopup.show({
+    template: '<input type="text" ng-model="data.groupcode" autofocus placeholder="Group code">',
+    title: 'Join Group',
+    subTitle: 'Enter Group Code',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+      {
+        text: '<b>Submit</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.data.groupcode) {
+            //don't allow the user to close unless he enters studentcode and relationship
+            e.preventDefault();
+          } else {
+            $scope.responses.push($scope.data);
+            return $scope.data;
+          }
+        }
+      }
+    ]
+  });
+  addGroupPopup.then(function(res) {
+    console.log('Tapped!', res);
+  });
+ };
 
 })
 
