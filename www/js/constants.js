@@ -1,7 +1,8 @@
 angular.module('pie')
 
 .constant('REMOTE', {
-	url: "http://localhost:8100/"
+	url: "http://piedev-rpmaps.rhcloud.com/servlets/",
+	platformID: 2
 })
 
 .constant('AUTH_EVENTS', {
@@ -10,8 +11,8 @@ angular.module('pie')
 })
 
 .constant('USER_ROLES', {
-	admin: 'admin_role',
-	teacher: 'teacher_role',
-	parent: 'parent_role',
-	student: 'student_role'
+	admin: 'ADMIN',
+	staff: 'STAFF',
+	parent: 'PARENT',
+	student: 'STUDENT'
 });

@@ -1,86 +1,98 @@
 angular.module('pie')
 
-.service('AuthService', function($q, $http, USER_ROLES) {
+.service('AuthService', function($q, $http, USER_ROLES, REMOTE) {
 
-  var LOCAL_TOKEN_KEY = 'yourTokenKey';
-  var username = '';
+  var LOCAL_TOKEN_KEY = 'USER_TOKEN';
+  var LOCAL_USER_TYPE_KEY = 'USER_TYPE';
   var isAuthenticated = false;
-  var role = '';
-  var authToken;
+  var verifiedUserType = undefined;
  
-  function loadUserCredentials() {
+  function loadUserData() {
     var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-    if (token) {
-      useCredentials(token);
+    var userType = window.localStorage.getItem(LOCAL_USER_TYPE_KEY);
+    if (token && userType) {
+      authenticateUser(token);
+      verifyUserType(userType);
     }
   }
- 
-  function storeUserCredentials(token) {
-    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-    useCredentials(token);
-  }
- 
-  function useCredentials(token) {
-    username = token.split('.')[0];
+
+  function authenticateUser(token) {
     isAuthenticated = true;
-    authToken = token;
- 
-    if (username == 'admin') {
-      role = USER_ROLES.admin
-    }
-    if (username == 'parent') {
-      role = USER_ROLES.parent
-    }
-    if (username == 'teacher') {
-      role = USER_ROLES.teacher
-    }
-    if (username == 'student') {
-      role = USER_ROLES.student
-    }
- 
-    // Set the token as header for your requests!
     $http.defaults.headers.common['X-Auth-Token'] = token;
   }
  
+  function verifyUserType(userType) {
+    if (userType == 'ADMIN') {
+      verifiedUserType = USER_ROLES.admin
+    }
+    if (userType == 'PARENT') {
+      verifiedUserType = USER_ROLES.parent
+    }
+    if (userType == 'STAFF') {
+      verifiedUserType = USER_ROLES.staff
+    }
+    if (userType == 'STUDENT') {
+      verifiedUserType = USER_ROLES.student
+    }
+  }
+ 
   function destroyUserCredentials() {
-    authToken = undefined;
-    username = '';
     isAuthenticated = false;
     $http.defaults.headers.common['X-Auth-Token'] = undefined;
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    window.localStorage.removeItem(LOCAL_USER_TYPE_KEY);
   }
  
-  var login = function(name, pw) {
-    return $q(function(resolve, reject) {
-      if ((name == 'admin' && pw == '1') || (name == 'parent' && pw == '1') || (name == 'teacher' && pw == '1') || (name == 'student' && pw == '1')) {
-        // Make a request and receive your auth token from your server
-        storeUserCredentials(name + '.yourServerToken');
-        resolve('Login success.');
+  var login = function(userEmail, userPassword) {
+    var deferred = $q.defer();
+
+    var request = {
+      method: 'POST',
+      url: REMOTE.url + 'login',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      data : 'userEmail=' + userEmail + '&userPassword=' + userPassword + '&platformID=' + REMOTE.platformID
+    }
+    $http(request).success(function(data, status, headers, config) {
+      if (data.result == 'SUCCESS') {
+        
+        var userToken = headers('X-Auth-Token');
+        authenticateUser(userToken);
+        window.localStorage.setItem(LOCAL_TOKEN_KEY, userToken);
+
+        var userType = data.user.userType;
+        verifyUserType(userType);
+        window.localStorage.setItem(LOCAL_USER_TYPE_KEY, userType);
+
+        deferred.resolve(data.user);
       } else {
-        reject('Login Failed.');
+        deferred.reject(data.message);
       }
+    }).error(function(data, status, header, config) {
+      deferred.reject("Connection cannot be established! Please check your internet connection and try again.");
     });
+
+    return deferred.promise;
   };
  
   var logout = function() {
     destroyUserCredentials();
   };
  
-  var isAuthorized = function(authorizedRoles) {
-    if (!angular.isArray(authorizedRoles)) {
-      authorizedRoles = [authorizedRoles];
+  var isAuthorized = function(authorizedUserTypes) {
+    if (!angular.isArray(authorizedUserTypes)) {
+      authorizedUserTypes = [authorizedUserTypes];
     }
-    return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+    return (isAuthenticated && authorizedUserTypes.indexOf(verifiedUserType) !== -1);
   };
  
-  loadUserCredentials();
+  loadUserData();
  
   return {
     login: login,
     logout: logout,
     isAuthorized: isAuthorized,
-    isAuthenticated: function() {return isAuthenticated;},
-    username: function() {return username;},
-    role: function() {return role;}
+    isAuthenticated: function() {return isAuthenticated;}
   };
 });

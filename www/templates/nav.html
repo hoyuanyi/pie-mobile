@@ -33,25 +33,25 @@
         <ion-item menu-close href="#/nav/account" class="item-icon-left">
           <i class="icon ion-person"></i>Account
         </ion-item>
-        <ion-item menu-close href="#/nav/notes" ng-if="userrole != 'admin_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/notes" ng-if="user.get('userType') != 'ADMIN'" class="item-icon-left">
           <i class="icon ion-ios-compose-outline"></i>Notes
         </ion-item>
-        <ion-item menu-close href="#/nav/events" ng-if="userrole != 'admin_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/events" ng-if="user.get('userType') != 'ADMIN'" class="item-icon-left">
           <i class="icon ion-calendar"></i>Events
         </ion-item>
-        <ion-item menu-close href="#/nav/homework" ng-if="userrole != 'admin_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/homework" ng-if="user.get('userType') != 'ADMIN'" class="item-icon-left">
           <i class="icon ion-edit"></i>Homework
         </ion-item>
-        <ion-item menu-close href="#/nav/groups" ng-if="['teacher_role', 'student_role'].indexOf(userrole) > -1" class="item-icon-left">
+        <ion-item menu-close href="#/nav/groups" ng-if="['STAFF', 'STUDENT'].indexOf(user.get('userType')) > -1" class="item-icon-left">
           <i class="icon ion-android-contacts"></i>Groups
         </ion-item>
-        <ion-item menu-close href="#/nav/schools" ng-if="userrole == 'admin_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/schools" ng-if="user.get('userType') == 'ADMIN'" class="item-icon-left">
           <i class="icon ion-university"></i>Schools
         </ion-item>
-        <ion-item menu-close href="#/nav/status" ng-if="userrole == 'admin_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/status" ng-if="user.get('userType') == 'ADMIN'" class="item-icon-left">
           <i class="icon ion-stats-bars"></i>Status
         </ion-item>
-        <ion-item menu-close href="#/nav/children" ng-if="userrole == 'parent_role'" class="item-icon-left">
+        <ion-item menu-close href="#/nav/children" ng-if="user.get('userType') == 'PARENT'" class="item-icon-left">
           <i class="icon ion-android-contact"></i>Children
         </ion-item>
         <ion-item menu-close href="#/nav/settings" class="item-icon-left">

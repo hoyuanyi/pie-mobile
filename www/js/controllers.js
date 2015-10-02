@@ -1,10 +1,10 @@
 angular.module('pie')
 
 .controller('AppCtrl', function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
-  $scope.username = AuthService.username();
-  $scope.userrole = AuthService.role();
 
- 
+  Ionic.io();
+  $scope.user = Ionic.User.current();
+
   $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
     var alertPopup = $ionicPopup.alert({
       title: 'Unauthorized!',
@@ -17,101 +17,102 @@ angular.module('pie')
     $state.go('login');
     var alertPopup = $ionicPopup.alert({
       title: 'Session Lost!',
-      template: 'Sorry, You have to login again.'
+      template: 'Please login again.'
     });
   });
- 
-  $scope.setCurrentUsername = function(name) {
-    $scope.username = name;
-  };
 
-  $scope.setCurrentUserrole = function(role) {
-    $scope.userrole = role;
+  $scope.setUser = function(user) {
+    $scope.user = user;
   }
 
 })
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, $ionicModal) {
 
-  $scope.registerParentInfo = {};
-  $scope.registerStudentInfo = {};
+  $scope.loginData = {};
+  $scope.registrationData = {};
 
-  $ionicModal.fromTemplateUrl('chooseType.html', {
-    id : '1',
+  $ionicModal.fromTemplateUrl('userType.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal1 = modal;
+    $scope.userTypeModal = modal;
   });
 
   $ionicModal.fromTemplateUrl('parentRegister.html', {
-    id : '2',
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal2 = modal;
+    $scope.parentRegistrationModal = modal;
   });
 
-  $ionicModal.fromTemplateUrl('childRegister.html', {
-    id : '3',
+  $ionicModal.fromTemplateUrl('studentRegister.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal3 = modal;
+    $scope.studentRegistrationModal = modal;
   });
 
-  $scope.openRegisterModal = function(index) {
-    if(index == 1) {
-      $scope.modal1.show();
-    } else if(index == 2) {
-      $scope.modal2.show();
-    } else {
-      $scope.modal3.show();
-    }
-  };
-  $scope.closeRegisterModal = function(index) {
-    if(index == 1) {
-      $scope.modal1.hide();
-    } else if(index == 2) {
-      $scope.modal2.hide();
-    } else {
-      $scope.modal3.hide();
-    }
-  };
-  //Cleanup the modal when we're done with it!
-  $scope.$on('$destroy', function() {
-    $scope.modal1.remove();
-    $scope.modal2.remove();
-    $scope.modal3.remove();
-  });
-  // Execute action on hide modal
   $scope.$on('modal.hidden', function() {
-    // Execute action
-  });
-  // Execute action on remove modal
-  $scope.$on('modal.removed', function() {
-    // Execute action
+    for (var parameter in $scope.registrationData) {
+      if ($scope.registrationData.hasOwnProperty(parameter)) {
+        $scope.registrationData[parameter] = "";
+      }
+    }
   });
 
-  $scope.data = {};
+  $scope.$on('$destroy', function() {
+    $scope.userTypeModal.remove();
+    $scope.parentRegistrationModal.remove();
+    $scope.studentRegistrationModal.remove();
+  });
  
-  $scope.login = function(data) {
-    AuthService.login(data.username, data.password).then(function(authenticated) {
+  $scope.login = function(loginData) {
+    AuthService.login(loginData.userEmail, loginData.userPassword).then(function(data) {
+
+      Ionic.io();
+      var push = new Ionic.Push();
+      push.register();
+      var user = Ionic.User.current();
+      if (!user.id) {
+        user.id = data.userID + '@' + data.userFirstName + data.userLastName
+      }
+      user.set('userEmail', data.userEmail);
+      user.set('userFirstName', data.userFirstName);
+      user.set('userLastName', data.userLastName);
+      user.set('userMobile', data.userMobile);
+      user.set('userType', data.userType);
+      push.addTokenToUser(user);
+      user.save();
+
+      $scope.setUser(user);
+
       $state.go('nav.dashboard', {}, {reload: true});
-      $scope.setCurrentUsername(data.username);
-      $scope.setCurrentUserrole(AuthService.role());
-    }, function(err) {
+
+    }, function(error) {
       var alertPopup = $ionicPopup.alert({
         title: 'Login failed!',
-        template: 'Please check your credentials!'
+        template: error
       });
     });
   };
+
+  $scope.registerParent = function(registrationData) {
+
+  };
+
+  $scope.registerStudent = function(registrationData) {
+
+  };
+
 })
 
-.controller('NavCtrl', function($scope, $state, $ionicHistory, AuthService, USER_ROLES) {
+.controller('NavCtrl', function($window, $scope, $state, $ionicHistory, AuthService, USER_ROLES) {
 
   $scope.logout = function() {
+    $window.localStorage.clear();
+    $ionicHistory.clearCache();
+    $ionicHistory.clearHistory();
     AuthService.logout();
     $state.go('login');
     $scope.$root.enableRight = false;
@@ -119,19 +120,19 @@ angular.module('pie')
 
   $scope.displaySideMenu = function() {
     var isOnRightView = ['nav.notes', 'nav.homework', 'nav.events'].indexOf($ionicHistory.currentStateName()) > -1;
-    var isParent = AuthService.role() == 'parent_role';
+    var isParent = $scope.user.get('userType') == 'PARENT';
     return isOnRightView && isParent;
   }
 
   $scope.displayJoinGroup = function() {
     var isOnRightView = $ionicHistory.currentStateName() == 'nav.groups';
-    var isStudent = AuthService.role() == 'student_role';
+    var isStudent = $scope.user.get('userType')  == 'STUDENT';
     return isOnRightView && isStudent;
   }
 
 })
 
-.controller('DashboardCtrl', function($scope, $state, $http, $ionicPopup, AuthService, REMOTE) {
+.controller('DashboardCtrl', function($scope, $state, $http, $ionicPopup, REMOTE) {
  
   $scope.performValidRequest = function() {
     $http.get(REMOTE.url + 'valid').then(
