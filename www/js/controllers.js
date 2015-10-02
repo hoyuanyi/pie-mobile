@@ -5,6 +5,9 @@ angular.module('pie')
   $scope.userrole = AuthService.role();
 
  
+  Ionic.io();
+  $scope.user = Ionic.User.current();
+
   $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
     var alertPopup = $ionicPopup.alert({
       title: 'Unauthorized!',

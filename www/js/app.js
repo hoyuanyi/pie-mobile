@@ -1,4 +1,5 @@
 angular.module('pie', ['ionic', 'ngMockE2E'])
+angular.module('pie', ['ionic','ionic.service.core', 'ngResource', 'ngMockE2E'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

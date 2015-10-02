@@ -1,7 +1,7 @@
 {
-  "name": "angular-mocks",
+  "name": "angular-resource",
   "version": "1.4.7",
-  "main": "./angular-mocks.js",
+  "main": "./angular-resource.js",
   "ignore": [],
   "dependencies": {
     "angular": "1.4.7"
