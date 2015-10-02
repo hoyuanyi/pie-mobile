@@ -1,10 +1,7 @@
 angular.module('pie')
 
 .controller('AppCtrl', function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
-  $scope.username = AuthService.username();
-  $scope.userrole = AuthService.role();
 
- 
   Ionic.io();
   $scope.user = Ionic.User.current();
 
@@ -20,16 +17,12 @@ angular.module('pie')
     $state.go('login');
     var alertPopup = $ionicPopup.alert({
       title: 'Session Lost!',
-      template: 'Sorry, You have to login again.'
+      template: 'Please login again.'
     });
   });
- 
-  $scope.setCurrentUsername = function(name) {
-    $scope.username = name;
-  };
 
-  $scope.setCurrentUserrole = function(role) {
-    $scope.userrole = role;
+  $scope.setUser = function(user) {
+    $scope.user = user;
   }
 
 })
@@ -98,23 +91,43 @@ angular.module('pie')
 
   $scope.data = {};
  
-  $scope.login = function(data) {
-    AuthService.login(data.username, data.password).then(function(authenticated) {
+  $scope.login = function(loginData) {
+    AuthService.login(loginData.userEmail, loginData.userPassword).then(function(data) {
+
+      Ionic.io();
+      var push = new Ionic.Push();
+      push.register();
+      var user = Ionic.User.current();
+      if (!user.id) {
+        user.id = data.userID + '@' + data.userFirstName + data.userLastName
+      }
+      user.set('userEmail', data.userEmail);
+      user.set('userFirstName', data.userFirstName);
+      user.set('userLastName', data.userLastName);
+      user.set('userMobile', data.userMobile);
+      user.set('userType', data.userType);
+      push.addTokenToUser(user);
+      user.save();
+
+      $scope.setUser(user);
+
       $state.go('nav.dashboard', {}, {reload: true});
-      $scope.setCurrentUsername(data.username);
-      $scope.setCurrentUserrole(AuthService.role());
-    }, function(err) {
+
+    }, function(error) {
       var alertPopup = $ionicPopup.alert({
         title: 'Login failed!',
-        template: 'Please check your credentials!'
+        template: error
       });
     });
   };
 })
 
-.controller('NavCtrl', function($scope, $state, $ionicHistory, AuthService, USER_ROLES) {
+.controller('NavCtrl', function($window, $scope, $state, $ionicHistory, AuthService, USER_ROLES) {
 
   $scope.logout = function() {
+    $window.localStorage.clear();
+    $ionicHistory.clearCache();
+    $ionicHistory.clearHistory();
     AuthService.logout();
     $state.go('login');
     $scope.$root.enableRight = false;
@@ -122,19 +135,19 @@ angular.module('pie')
 
   $scope.displaySideMenu = function() {
     var isOnRightView = ['nav.notes', 'nav.homework', 'nav.events'].indexOf($ionicHistory.currentStateName()) > -1;
-    var isParent = AuthService.role() == 'parent_role';
+    var isParent = $scope.user.get('userType') == 'PARENT';
     return isOnRightView && isParent;
   }
 
   $scope.displayJoinGroup = function() {
     var isOnRightView = $ionicHistory.currentStateName() == 'nav.groups';
-    var isStudent = AuthService.role() == 'student_role';
+    var isStudent = $scope.user.get('userType')  == 'STUDENT';
     return isOnRightView && isStudent;
   }
 
 })
 
-.controller('DashboardCtrl', function($scope, $state, $http, $ionicPopup, AuthService, REMOTE) {
+.controller('DashboardCtrl', function($scope, $state, $http, $ionicPopup, REMOTE) {
  
   $scope.performValidRequest = function() {
     $http.get(REMOTE.url + 'valid').then(
