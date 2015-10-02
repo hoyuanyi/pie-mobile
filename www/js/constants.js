@@ -1,7 +1,8 @@
 angular.module('pie')
 
 .constant('REMOTE', {
-	url: "http://localhost:8100/"
+	url: "http://piedev-rpmaps.rhcloud.com/servlets/",
+	platformID: 2
 })
 
 .constant('AUTH_EVENTS', {

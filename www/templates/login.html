@@ -1,134 +1,111 @@
 <ion-view name="login-view">
   <ion-nav-title>Sign-in</ion-nav-title>
   <ion-content class="padding">
-      <div class="list list-inset">
-          <label class="item item-input">
-              <input type="text" placeholder="Username" ng-model="data.username">
-          </label>
-          <label class="item item-input">
-              <input type="password" placeholder="Password" ng-model="data.password">
-          </label>
-      </div>
-      <button class="button button-block button-positive" ng-click="login(data)">Login</button>
-      <button class="button button-block button-positive" ng-click="openRegisterModal(1)">Sign Up</button>
+    <div class="list list-inset">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model="loginData.userEmail"></label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="loginData.userPassword"></label>
+    </div>
+    <button class="button button-block button-positive" ng-click="login(loginData)">Login</button>
+    <button class="button button-block button-positive" ng-click="userTypeModal.show()">Sign Up</button>
   </ion-content>
 </ion-view>
 
-<script id="chooseType.html" type="text/ng-template">
- <ion-modal-view>
+<script id="userType.html" type="text/ng-template">
+  <ion-modal-view>
     <ion-header-bar>
       <h1 class="title">Register</h1>
       <div class="buttons">
-        <button class="button icon ion-home" ng-click="closeRegisterModal(1)">Back</button>
+        <button ion-nav-back-button class="button-clear" ng-click="userTypeModal.hide()">Back</button>
       </div>
     </ion-header-bar>
     <ion-content class="padding">
       <h3><center>Are you a</center></h3>     
-      <button class="button button-block button-positive" ng-click="openRegisterModal(2)">Parent</button>
-      <button class="button button-block button-positive" ng-click="openRegisterModal(3)">Student</button>
+      <button class="button button-block button-positive" ng-click="parentRegistrationModal.show()">Parent</button>
+      <button class="button button-block button-positive" ng-click="studentRegistrationModal.show()">Student</button>
     </ion-content>
-</ion-modal-view>
+  </ion-modal-view>
 </script>
 
 <script id="parentRegister.html" type="text/ng-template">
  <ion-modal-view>
     <ion-header-bar>
-      <h1 class="title">Register</h1>
+      <h1 class="title">Parent Registration</h1>
       <div class="buttons">
-        <button class="button icon ion-home" ng-click="closeRegisterModal(2)">Back</button>
+        <button ion-nav-back-button class="button-clear" ng-click="parentRegistrationModal.hide()">Back</button>
       </div>
     </ion-header-bar>
     <ion-content>      
       <div class="row">
         <div class="col">
           <label class="item item-input">
-            <input type="text" placeholder="First Name" ng-model="registerParentInfo.firstname">
-          </label>
+            <input type="text" placeholder="First Name" ng-model="registrationData.userFirstName"></label>
         </div>
         <div class="col">
           <label class="item item-input">
-            <input type="text" placeholder="Last Name" ng-model="registerParentInfo.lastname">
-          </label>
+            <input type="text" placeholder="Last Name" ng-model="registrationData.userLastName"></label>
         </div>
-      </div>   
+      </div>  
       <div class="padding">
-      <label class="item item-input">
-        <input type="text" placeholder="Username" ng-model="registerParentInfo.username">
-      </label>
-      </div>
+        <label class="item item-input">
+          <input type="email" placeholder="Email" ng-model="registrationData.userEmail"></label>
+      </div> 
       <div class="row">
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="registerParentInfo.password">
-        </label>
+            <input type="password" placeholder="Password" ng-model="registrationData.userPassword"></label>
         </div>
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Confirm Password">
-        </label>
+            <input type="password" placeholder="Confirm Password ng-model="registrationData.confirmPassword""></label>
         </div>
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="email" placeholder="Email" ng-model="registerParentInfo.email">
-        </label>
+          <input type="tel" placeholder="Mobile" ng-model="registrationData.userMobile"></label>
       </div>
       <div class="padding">
-        <label class="item item-input">
-          <input type="tel" placeholder="Mobile" ng-model="registerParentInfo.mobile">
-        </label>
-      </div>
-      <div class="padding">
-      <button class="button button-block button-positive" ng-click="openRegisterModal()">Register</button>
+        <button class="button button-block button-positive" ng-click="registerParent(registrationData)">Register</button>
       </div>
     </ion-content>
-</ion-modal-view>
+  </ion-modal-view>
 </script>
 
-<script id="childRegister.html" type="text/ng-template">
+<script id="studentRegister.html" type="text/ng-template">
  <ion-modal-view>
     <ion-header-bar>
-      <h1 class="title">Register</h1>
+      <h1 class="title">Student Registration</h1>
       <div class="buttons">
-        <button class="button icon ion-home" ng-click="closeRegisterModal(3)">Back</button>
+        <button ion-nav-back-button class="button-clear" ng-click="studentRegistrationModal.hide()">Back</button>
       </div>
     </ion-header-bar>
     <ion-content>      
       <div class="padding">
-      <label class="item item-input">
-        <input type="text" placeholder="Username" ng-model="registerStudentInfo.username">
-      </label>
+        <label class="item item-input">
+          <input type="text" placeholder="Student Code" ng-model="registrationData.studentCode"></label>
+      </div>
+      <div class="padding">
+        <label class="item item-input">
+          <input type="email" placeholder="Email" ng-model="registrationData.userEmail"></label>
       </div>
       <div class="row">
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="registerStudentInfo.password">
-        </label>
+            <input type="password" placeholder="Password" ng-model="registrationData.userPassword"></label>
         </div>
         <div class="col">
         <label class="item item-input">
-            <input type="password" placeholder="Confirm Password">
-        </label>
+            <input type="password" placeholder="Confirm Password" ng-model="registrationData.confirmPassword"></label>
         </div>
       </div>
       <div class="padding">
         <label class="item item-input">
-          <input type="email" placeholder="Email" ng-model="registerStudentInfo.email">
-        </label>
+          <input type="tel" placeholder="Mobile" ng-model="registrationData.userMobile"></label>
       </div>
       <div class="padding">
-        <label class="item item-input">
-          <input type="tel" placeholder="Mobile" ng-model="registerStudentInfo.mobile">
-        </label>
-      </div>
-      <div class="padding">
-        <label class="item item-input">
-          <input type="text" placeholder="Student Code" ng-model="registerStudentInfo.studentcode">
-        </label>
-      </div>
-      <div class="padding">
-      <button class="button button-block button-positive" ng-click="openRegisterModal()">Register</button>
+        <button class="button button-block button-positive" ng-click="registerStudent(registrationData)">Register</button>
       </div>
     </ion-content>
-</ion-modal-view>
+  </ion-modal-view>
 </script>

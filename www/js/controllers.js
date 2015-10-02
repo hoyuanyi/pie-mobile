@@ -29,67 +29,43 @@ angular.module('pie')
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, $ionicModal) {
 
-  $scope.registerParentInfo = {};
-  $scope.registerStudentInfo = {};
+  $scope.loginData = {};
+  $scope.registrationData = {};
 
-  $ionicModal.fromTemplateUrl('chooseType.html', {
-    id : '1',
+  $ionicModal.fromTemplateUrl('userType.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal1 = modal;
+    $scope.userTypeModal = modal;
   });
 
   $ionicModal.fromTemplateUrl('parentRegister.html', {
-    id : '2',
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal2 = modal;
+    $scope.parentRegistrationModal = modal;
   });
 
-  $ionicModal.fromTemplateUrl('childRegister.html', {
-    id : '3',
+  $ionicModal.fromTemplateUrl('studentRegister.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.modal3 = modal;
+    $scope.studentRegistrationModal = modal;
   });
 
-  $scope.openRegisterModal = function(index) {
-    if(index == 1) {
-      $scope.modal1.show();
-    } else if(index == 2) {
-      $scope.modal2.show();
-    } else {
-      $scope.modal3.show();
-    }
-  };
-  $scope.closeRegisterModal = function(index) {
-    if(index == 1) {
-      $scope.modal1.hide();
-    } else if(index == 2) {
-      $scope.modal2.hide();
-    } else {
-      $scope.modal3.hide();
-    }
-  };
-  //Cleanup the modal when we're done with it!
-  $scope.$on('$destroy', function() {
-    $scope.modal1.remove();
-    $scope.modal2.remove();
-    $scope.modal3.remove();
-  });
-  // Execute action on hide modal
   $scope.$on('modal.hidden', function() {
-    // Execute action
-  });
-  // Execute action on remove modal
-  $scope.$on('modal.removed', function() {
-    // Execute action
+    for (var parameter in $scope.registrationData) {
+      if ($scope.registrationData.hasOwnProperty(parameter)) {
+        $scope.registrationData[parameter] = "";
+      }
+    }
   });
 
-  $scope.data = {};
+  $scope.$on('$destroy', function() {
+    $scope.userTypeModal.remove();
+    $scope.parentRegistrationModal.remove();
+    $scope.studentRegistrationModal.remove();
+  });
  
   $scope.login = function(loginData) {
     AuthService.login(loginData.userEmail, loginData.userPassword).then(function(data) {
@@ -120,6 +96,15 @@ angular.module('pie')
       });
     });
   };
+
+  $scope.registerParent = function(registrationData) {
+
+  };
+
+  $scope.registerStudent = function(registrationData) {
+
+  };
+
 })
 
 .controller('NavCtrl', function($window, $scope, $state, $ionicHistory, AuthService, USER_ROLES) {
