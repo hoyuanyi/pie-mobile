@@ -255,39 +255,60 @@ angular.module('pie')
 
 })
 
-.controller('ChildDetailsCtrl', function($scope, $ionicPopup) {
+.controller('ChildDetailsCtrl', function($scope, $ionicPopup, $ionicModal) {
+  $scope.groups = [{name:"2E5 2016", pass:0}, {name:"2E6 2016", pass:1}];
 
   $scope.responses = [];
 
-  $scope.showAddGroupPopup = function() {
+  $scope.showAddGroupPassPopup = function(group) {
   $scope.data = {};
-
-  var addGroupPopup = $ionicPopup.show({
-    template: '<input type="text" ng-model="data.groupcode" autofocus placeholder="Group code">',
-    title: 'Join Group',
-    subTitle: 'Enter Group Code',
-    scope: $scope,
-    buttons: [
-      { text: 'Cancel' },
-      {
-        text: '<b>Submit</b>',
-        type: 'button-positive',
-        onTap: function(e) {
-          if (!$scope.data.groupcode) {
-            //don't allow the user to close unless he enters studentcode and relationship
-            e.preventDefault();
-          } else {
-            $scope.responses.push($scope.data);
-            return $scope.data;
+  if(group.pass == 0){
+    var addGroupPopup = $ionicPopup.show({
+      template: '<input type="text" ng-model="data.groupcode" autofocus placeholder="Group code">',
+      title: 'Join Group',
+      subTitle: 'Enter Group Code',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: '<b>Submit</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.groupcode) {
+              //don't allow the user to close unless he enters group code.
+              e.preventDefault();
+            } else {
+              $scope.responses.push(group.name);
+              console.log($scope.responses);
+              return $scope.data;
+            }
           }
         }
-      }
-    ]
+      ]
+    });
+    addGroupPopup.then(function(res) {
+      console.log('Tapped!', res);
+    });
+  } else {
+    alert("No password needed for group");
+    $scope.responses.push(group.name);
+  } 
+};
+
+  $ionicModal.fromTemplateUrl('listOfGroups.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.listOfGroups = modal;
   });
-  addGroupPopup.then(function(res) {
-    console.log('Tapped!', res);
+
+  $scope.$on('modal.hidden', function() {
+
   });
- };
+
+  $scope.$on('$destroy', function() {
+    $scope.listOfGroups.remove();
+  });
 
 })
 

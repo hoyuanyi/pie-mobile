@@ -1,7 +1,7 @@
 <ion-view>
 	<ion-nav-title>Child Details</ion-nav-title>
  	<ion-nav-buttons side="right">
-    	<a class="button button-clear item icon-right ion-android-add-circle" ng-click="showAddGroupPopup()"></a>
+    	<a class="button button-clear" ng-click="listOfGroups.show()">Join Group</a>
     </ion-nav-buttons>
 	<ion-content>
 		<center><h4>HO YUAN YI</h4></center>
@@ -11,7 +11,25 @@
 		   	</div>
 			<div class="item item-divider item-button-right">
 		    	<h4 style="color:blue;">ADDITIONAL GROUP</h4>
-		    	<p style="margin-left:16px;" ng-repeat="response in responses">{{response.groupcode}}</p>
+		    	<p style="margin-left:16px;" ng-repeat="response in responses">{{response}}</p>
 			</div>
   	</ion-content>
 </ion-view>
+
+<script id="listOfGroups.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Groups</h1>
+      <div class="buttons">
+        <button ion-nav-back-button class="button-clear" ng-click="listOfGroups.hide()">Back</button>
+      </div>
+    </ion-header-bar>
+    <ion-content class="padding">
+    	<ion-list>
+  			<ion-item ng-repeat="group in groups" ng-click="showAddGroupPassPopup({{group}})">
+    			{{group.name}}
+  			</ion-item>
+		</ion-list>
+    </ion-content>
+  </ion-modal-view>
+</script>
