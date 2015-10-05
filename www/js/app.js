@@ -1,4 +1,4 @@
-angular.module('pie', ['ionic','ionic.service.core', 'ngResource', 'ngMockE2E'])
+angular.module('pie', ['ionic','ionic.service.core', 'ngResource'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -169,11 +169,11 @@ angular.module('pie', ['ionic','ionic.service.core', 'ngResource', 'ngMockE2E'])
   });
 })
 
-.run(function($httpBackend, REMOTE) {
-  $httpBackend.whenPOST(REMOTE.url + 'login').respond({result:'SUCCESS', user: {userFirstName: 'Test', userLastName: 'User', userEmail: 'test@test.com', userType: 'PARENT', userMobile: ''}});
+// .run(function($httpBackend, REMOTE) {
+//   $httpBackend.whenPOST(REMOTE.url + 'login').respond({result:'SUCCESS', user: {userFirstName: 'Test', userLastName: 'User', userEmail: 'test@test.com', userType: 'PARENT', userMobile: ''}});
 
-  $httpBackend.whenGET(/templates\/\w+.*/).passThrough();
-})
+//   $httpBackend.whenGET(/templates\/\w+.*/).passThrough();
+// })
 
 .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
