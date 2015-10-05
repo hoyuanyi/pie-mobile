@@ -1,9 +1,10 @@
 angular.module('pie')
 
-.controller('AppCtrl', function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
+.controller('AppCtrl', function($scope, $state, $ionicPopup, AuthService, ParentService, AUTH_EVENTS) {
 
   Ionic.io();
   $scope.user = Ionic.User.current();
+  $scope.children = window.localStorage.getItem("children");
 
   $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
     var alertPopup = $ionicPopup.alert({
@@ -25,9 +26,14 @@ angular.module('pie')
     $scope.user = user;
   }
 
+  $scope.updateChildren = function() {
+    $scope.children = ParentService.getChildren($scope.user);
+    window.localStorage.setItem("children", $scope.children);
+  }
+
 })
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, $ionicModal) {
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ParentService, StudentService, $ionicModal, $ionicLoading) {
 
   $scope.loginData = {};
   $scope.registrationData = {};
@@ -68,41 +74,110 @@ angular.module('pie')
   });
  
   $scope.login = function(loginData) {
-    AuthService.login(loginData.userEmail, loginData.userPassword).then(function(data) {
 
-      Ionic.io();
-      var push = new Ionic.Push();
-      push.register();
-      var user = Ionic.User.current();
-      if (!user.id) {
-        user.id = data.userID + '@' + data.userFirstName + data.userLastName
-      }
-      user.set('userEmail', data.userEmail);
-      user.set('userFirstName', data.userFirstName);
-      user.set('userLastName', data.userLastName);
-      user.set('userMobile', data.userMobile);
-      user.set('userType', data.userType);
-      push.addTokenToUser(user);
-      user.save();
+    if (loginData.userEmail && loginData.userPassword) {
+      AuthService.login(loginData).then(function(data) {
 
-      $scope.setUser(user);
+        Ionic.io();
+        var push = new Ionic.Push();
+        push.register();
+        var user = Ionic.User.current();
+        if (!user.id) {
+          user.id = data.userID + '@' + data.userFirstName + data.userLastName
+        }
+        user.set('userEmail', data.userEmail);
+        user.set('userFirstName', data.userFirstName);
+        user.set('userLastName', data.userLastName);
+        user.set('userMobile', data.userMobile);
+        user.set('userType', data.userType);
+        push.addTokenToUser(user);
+        user.save();
 
-      $state.go('nav.dashboard', {}, {reload: true});
+        $scope.setUser(user);
 
-    }, function(error) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Login failed!',
-        template: error
+        if (user.get('userType') == 'PARENT') {
+          $scope.updateChildren();
+        }
+
+        $state.go('nav.dashboard', {}, {reload: true});
+
+      }, function(error) {
+        var alertPopup = $ionicPopup.alert({
+          title: 'Login failed!',
+          template: error
+        });
       });
-    });
+    }
   };
 
   $scope.registerParent = function(registrationData) {
 
+    if (registrationData.userFirstName && registrationData.userLastName && registrationData.userEmail && registrationData.userPassword && registrationData.confirmPassword) {
+      if (registrationData.userPassword == registrationData.confirmPassword) {
+
+        $ionicLoading.show({
+          animation: 'fade-in',
+          showBackdrop: true,
+          showDelay: 0
+        });
+
+        ParentService.register(registrationData).then(function(data) {          
+          $scope.parentRegistrationModal.hide();
+          $scope.userTypeModal.hide();
+          $ionicLoading.hide();
+          var alertPopup = $ionicPopup.alert({
+            title: 'Registration successful!',
+            template: data
+          });
+        }, function(error) {
+          $ionicLoading.hide();
+          var alertPopup = $ionicPopup.alert({
+            title: 'Registration failed!',
+            template: error
+          });
+        })
+      } else {
+        var alertPopup = $ionicPopup.alert({
+          title: 'Invalid data!',
+          template: "Passwords do not match!"
+        });
+      }
+    }
   };
 
   $scope.registerStudent = function(registrationData) {
 
+    if (registrationData.studentCode && registrationData.userEmail && registrationData.userPassword && registrationData.confirmPassword) {
+      if (registrationData.userPassword == registrationData.confirmPassword) {
+
+        $ionicLoading.show({
+          animation: 'fade-in',
+          showBackdrop: true,
+          showDelay: 0
+        });
+
+        StudentService.register(registrationData).then(function(data) {          
+          $scope.studentRegistrationModal.hide();
+          $scope.userTypeModal.hide();
+          $ionicLoading.hide();
+          var alertPopup = $ionicPopup.alert({
+            title: 'Registration successful!',
+            template: data
+          });
+        }, function(error) {
+          $ionicLoading.hide();
+          var alertPopup = $ionicPopup.alert({
+            title: 'Registration failed!',
+            template: error
+          });
+        })
+      } else {
+        var alertPopup = $ionicPopup.alert({
+          title: 'Invalid data!',
+          template: "Passwords do not match!"
+        });
+      }
+    }
   };
 
 })
@@ -122,13 +197,13 @@ angular.module('pie')
     var isOnRightView = ['nav.notes', 'nav.homework', 'nav.events'].indexOf($ionicHistory.currentStateName()) > -1;
     var isParent = $scope.user.get('userType') == 'PARENT';
     return isOnRightView && isParent;
-  }
+  };
 
   $scope.displayJoinGroup = function() {
     var isOnRightView = $ionicHistory.currentStateName() == 'nav.groups';
     var isStudent = $scope.user.get('userType')  == 'STUDENT';
     return isOnRightView && isStudent;
-  }
+  };
 
 })
 

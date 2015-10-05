@@ -1,5 +1,126 @@
 angular.module('pie')
 
+.service('ParentService', function($q, $http, REMOTE) {
+
+  var register = function(registrationData) {
+    var deferred = $q.defer();
+
+    var request = {
+      method: 'POST',
+      url: REMOTE.url + 'registerparent',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+      },
+      data: {
+        userFirstName: registrationData.userFirstName,
+        userLastName: registrationData.userLastName,
+        userEmail: registrationData.userEmail,
+        userPassword: registrationData.userPassword,
+        userMobile: registrationData.userMobile
+      }
+    }
+    $http(request).success(function(data, status, headers, config) {
+      if (data.result == 'SUCCESS') {
+        deferred.resolve(data.message);
+      } else {
+        deferred.reject(data.message);
+      }
+    }).error(function(data, status, header, config) {
+      deferred.reject("Connection cannot be established! Please check your internet connection and try again.");
+    });
+
+    return deferred.promise;
+  }
+
+  var getChildren = function(user) {
+    var deferred = $q.defer();
+
+    var request = {
+      method: 'GET',
+      url: REMOTE.url + 'secured/parent/children',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+      },
+      params: {
+        parentID: user.get("userID")
+      }
+    }
+    $http(request).success(function(data, status, headers, config) {
+      deferred.resolve(data.parentChildren);
+    }).error(function(data, status, header, config) {
+      deferred.reject("Connection cannot be established! Please check your internet connection and try again.");
+    });
+
+    return deferred.promise;
+  }
+
+  return {
+    getChildren: getChildren,
+    register: register
+  };
+})
+
+.service('StudentService', function($q, $http, REMOTE) {
+
+  var getJoinedGroups = function(studentID, callback) {
+    $http.get(REMOTE.url + '/secured/student/joinedgroups').success(function(data) {
+      callback(data);
+    })
+  }
+
+  var register = function(registrationData) {
+    var deferred = $q.defer();
+
+    var request = {
+      method: 'POST',
+      url: REMOTE.url + 'registerstudent',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+      },
+      data: {
+        studentCode: registrationData.studentCode,
+        userEmail: registrationData.userEmail,
+        userPassword: registrationData.userPassword,
+        userMobile: registrationData.userMobile
+      }
+    }
+    $http(request).success(function(data, status, headers, config) {
+      if (data.result == 'SUCCESS') {
+        deferred.resolve(data.message);
+      } else {
+        deferred.reject(data.message);
+      }
+    }).error(function(data, status, header, config) {
+      deferred.reject("Connection cannot be established! Please check your internet connection and try again.");
+    });
+
+    return deferred.promise;
+  }
+
+  return {
+    getJoinedGroups: getJoinedGroups,
+    register: register
+  }
+})
+
 .service('AuthService', function($q, $http, USER_ROLES, REMOTE) {
 
   var LOCAL_TOKEN_KEY = 'USER_TOKEN';
@@ -43,7 +164,7 @@ angular.module('pie')
     window.localStorage.removeItem(LOCAL_USER_TYPE_KEY);
   }
  
-  var login = function(userEmail, userPassword) {
+  var login = function(loginData) {
     var deferred = $q.defer();
 
     var request = {
@@ -52,7 +173,17 @@ angular.module('pie')
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      data : 'userEmail=' + userEmail + '&userPassword=' + userPassword + '&platformID=' + REMOTE.platformID
+      transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+      },
+      data : {
+        userEmail: loginData.userEmail,
+        userPassword: loginData.userPassword,
+        platformID: REMOTE.platformID
+      }
     }
     $http(request).success(function(data, status, headers, config) {
       if (data.result == 'SUCCESS') {
